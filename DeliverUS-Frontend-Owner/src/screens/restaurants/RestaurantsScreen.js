@@ -8,26 +8,38 @@ import { API_BASE_URL } from '@env'
 import restaurantLogo from '../../../assets/restaurantLogo.jpeg'
 
 export default function RestaurantsScreen({ navigation }) {
+  const [restaurants, setRestaurants] = useState([])
+
+  useEffect(() => {
+    console.log('Loading restaurants, please wait 2 seconds')
+    setTimeout(() => {
+      setRestaurants(getAll) // getAll function has to be imported
+      console.log('Restaurants loaded')
+    }, 2000)
+  }, [])
+
+  const renderRestaurant = ({ item }) => {
+    return (
+      <Pressable
+        style={styles.row}
+        onPress={() => {
+          navigation.navigate('RestaurantDetailScreen', { id: item.id })
+        }}>
+          <TextRegular>
+              {item.name}
+          </TextRegular>
+      </Pressable>
+    )
+  }
+
   return (
     <View style={styles.container}>
-      <TextRegular style={{ fontSize: 16, alignSelf: 'center', margin: 20 }}>Random Restaurant</TextRegular>
-      <Pressable
-        onPress={() => {
-          navigation.navigate('RestaurantDetailScreen', { id: Math.floor(Math.random() * 100) })
-        }}
-        style={({ pressed }) => [
-          {
-            backgroundColor: pressed
-              ? GlobalStyles.brandBlueTap
-              : GlobalStyles.brandBlue
-          },
-          styles.actionButton
-        ]}
-      >
-        <TextRegular textStyle={styles.text}>
-          Go to Random Restaurant Details
-        </TextRegular>
-      </Pressable>
+      <FlatList
+        style={styles.container}
+        data={restaurants}
+        renderItem={renderRestaurant}
+        keyExtractor={item => item.id.toString()}
+      />
     </View>
   )
 }
