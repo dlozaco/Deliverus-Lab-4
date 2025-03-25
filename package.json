@@ -9,5 +9,8 @@
     "start:frontend": "cd DeliverUS-Frontend-Owner && npx expo start",
     "install:all:win": "npm run copy:env:win && npm run install:backend && npm run migrate:backend && npm run install:frontend",
     "install:all:bash": "npm run copy:env:bash && npm run install:backend && npm run migrate:backend && npm run install:frontend"
+  },
+  "dependencies": {
+    "react-native": "^0.76.7"
   }
 }
