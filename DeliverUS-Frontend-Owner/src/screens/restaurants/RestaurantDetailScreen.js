@@ -1,10 +1,11 @@
 /* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, FlatList, Pressable, ImageBackground, Image } from 'react-native'
+import { StyleSheet, View, FlatList, ImageBackground, Image } from 'react-native'
 import TextRegular from '../../components/TextRegular'
 import { getDetail } from '../../api/RestaurantEndpoints'
 import TextSemiBold from '../../components/TextSemibold'
-import { brandSecondary } from '../../styles/GlobalStyles'
+import { brandPrimary, brandSecondary } from '../../styles/GlobalStyles'
+import ImageCard from '../../components/ImageCard'
 
 export default function RestaurantDetailScreen ({ route }) {
   const { id } = route.params
@@ -29,7 +30,7 @@ export default function RestaurantDetailScreen ({ route }) {
       console.log('Restaurant details loaded')
     }, 1000)
   }, [])
-
+  /*
   const renderProduct = ({ item }) => {
     return (
       <Pressable
@@ -41,12 +42,27 @@ export default function RestaurantDetailScreen ({ route }) {
       </Pressable>
     )
   }
+    */
+
+  const renderProductWithImage = ({ item }) => {
+    return (
+      <ImageCard
+        style={styles.row}
+        imageUri={item.image ? { uri: process.env.API_BASE_URL + '/' + item.image } : restaurant.logo}
+        title={item.name}
+      >
+        <TextRegular numberOfLines={2}>{item.description}</TextRegular>
+        <TextSemiBold>Price: <TextSemiBold style={{ color: brandPrimary }}>{item.price}€</TextSemiBold></TextSemiBold >
+      </ImageCard>
+    )
+  }
+
   return (
     <View style={styles.container}>
       <FlatList
         style={styles.container}
         data={restaurant.products}
-        renderItem={renderProduct}
+        renderItem={renderProductWithImage}
         ListHeaderComponent={renderHeader}
         keyExtractor={item => item.id.toString()}
       />
