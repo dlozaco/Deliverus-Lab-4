@@ -1,13 +1,14 @@
+/* eslint-disable react/prop-types */
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, View, FlatList, Pressable } from 'react-native'
+import { StyleSheet, FlatList } from 'react-native'
 import TextRegular from '../../components/TextRegular'
 import { getAll } from '../../api/RestaurantEndpoints'
 import * as GlobalStyles from '../../styles/GlobalStyles'
+import ImageCard from '../../components/ImageCard'
 import TextSemiBold from '../../components/TextSemibold'
-import { API_BASE_URL } from '@env'
 import restaurantLogo from '../../../assets/restaurantLogo.jpeg'
 
-export default function RestaurantsScreen({ navigation }) {
+export default function RestaurantsScreen ({ navigation }) {
   const [restaurants, setRestaurants] = useState([])
 
   useEffect(() => {
@@ -18,29 +19,31 @@ export default function RestaurantsScreen({ navigation }) {
     }, 2000)
   }, [])
 
-  const renderRestaurant = ({ item }) => {
+  const renderRestaurantWithImageCard = ({ item }) => {
     return (
-      <Pressable
-        style={styles.row}
+      <ImageCard
+        imageUri={item.logo ? { uri: process.env.API_BASE_URL + '/' + item.logo } : restaurantLogo}
+        title={item.name}
         onPress={() => {
           navigation.navigate('RestaurantDetailScreen', { id: item.id })
-        }}>
-          <TextRegular>
-              {item.name}
-          </TextRegular>
-      </Pressable>
+        }}
+      >
+        <TextRegular numberOfLines={2}>{item.description}</TextRegular>
+        {item.averageServiceMinutes !== null &&
+          <TextSemiBold>Avg. service time: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.averageServiceMinutes} min.</TextSemiBold></TextSemiBold>
+        }
+        <TextSemiBold>Shipping: <TextSemiBold textStyle={{ color: GlobalStyles.brandPrimary }}>{item.shippingCosts.toFixed(2)}€</TextSemiBold></TextSemiBold>
+      </ImageCard>
     )
   }
 
   return (
-    <View style={styles.container}>
-      <FlatList
-        style={styles.container}
-        data={restaurants}
-        renderItem={renderRestaurant}
-        keyExtractor={item => item.id.toString()}
-      />
-    </View>
+    <FlatList
+      style={styles.container}
+      data={restaurants}
+      renderItem={renderRestaurantWithImageCard}
+      keyExtractor={item => item.id.toString()}
+    />
   )
 }
 
